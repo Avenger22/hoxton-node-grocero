@@ -1,33 +1,68 @@
 // #region 'Global Varibles'
-let totalEl = document.querySelector('span.total-number')
-const storeUl = document.querySelector("header .item-list")
-const cartUl = document.querySelector("main .item-list")
-const emptyCartBtn = document.querySelector('button.empty-cart-btn')
-const sortPriceBtn = document.querySelector('button.store--btn-sort-price')
-const sortAlphabetBtn = document.querySelector('button.store--btn-sort-alphabet')
-const sortPriceBtnRemove = document.querySelector('button.store--btn-sort-price-remove')
-const filterTypeApricot = document.querySelector('button.store--btn-sort-filter-10')
-const filterTypeBeetroot = document.querySelector('button.store--btn-sort-filter-1')
-const filterTypeCarrot = document.querySelector('button.store--btn-sort-filter-2')
-const filterTypeApple = document.querySelector('button.store--btn-sort-filter-3')
-const filterTypeAvocado = document.querySelector('button.store--btn-sort-filter-4')
-const filterTypeBanana = document.querySelector('button.store--btn-sort-filter-5')
-const filterTypeBellPepper = document.querySelector('button.store--btn-sort-filter-6')
-const filterTypeBerry = document.querySelector('button.store--btn-sort-filter-7')
-const filterTypeBlueBerry = document.querySelector('button.store--btn-sort-filter-8')
-const filterTypeEggPlant = document.querySelector('button.store--btn-sort-filter-9')
+let totalEl: HTMLElement | null = document.querySelector('span.total-number')
+const storeUl: HTMLElement | null = document.querySelector("header .item-list")
+const cartUl: HTMLElement | null = document.querySelector("main .item-list")
+const emptyCartBtn: HTMLElement | null = document.querySelector('button.empty-cart-btn')
+const sortPriceBtn: HTMLElement | null = document.querySelector('button.store--btn-sort-price')
+const sortAlphabetBtn: HTMLElement | null = document.querySelector('button.store--btn-sort-alphabet')
+const sortPriceBtnRemove: HTMLElement | null = document.querySelector('button.store--btn-sort-price-remove')
+const filterTypeApricot: HTMLElement | null = document.querySelector('button.store--btn-sort-filter-10')
+const filterTypeBeetroot: HTMLElement | null = document.querySelector('button.store--btn-sort-filter-1')
+const filterTypeCarrot: HTMLElement | null = document.querySelector('button.store--btn-sort-filter-2')
+const filterTypeApple: HTMLElement | null = document.querySelector('button.store--btn-sort-filter-3')
+const filterTypeAvocado: HTMLElement | null = document.querySelector('button.store--btn-sort-filter-4')
+const filterTypeBanana: HTMLElement | null = document.querySelector('button.store--btn-sort-filter-5')
+const filterTypeBellPepper: HTMLElement | null = document.querySelector('button.store--btn-sort-filter-6')
+const filterTypeBerry: HTMLElement | null = document.querySelector('button.store--btn-sort-filter-7')
+const filterTypeBlueBerry: HTMLElement | null = document.querySelector('button.store--btn-sort-filter-8')
+const filterTypeEggPlant: HTMLElement | null = document.querySelector('button.store--btn-sort-filter-9')
+// #endregion
+
+// #region 'TYPES'
+type Items = {
+  id: number,
+  name: string,
+  price: number,
+  inStock: number,
+  inCart: number,
+  filterOnly: boolean
+}
+
+type State = {
+  items: Items[]
+  priceOrderBy: Items[],
+  alphabetOrderBy: Items[],
+  orderByPrice: boolean,
+  orderByAlphabet: boolean,
+  filter: boolean
+}
+
+type alaphabetOrderBy = {
+  name: string
+}
+
+type element = {
+  id: number,
+  name: string,
+  price: number,
+  inStock: number,
+  inCart: number,
+  filterOnly: boolean
+}
+
+type priceOrderBy = {
+  name: number
+}
 // #endregion
 
 // #region 'START OF STATE OBJECT'
-const state = {
-
+const state: State = {
+  items : [],
   priceOrderBy: [], //this will have objects from items in state ordered by price in rerendering etc feature works
   alphabetOrderBy: [], //the same as above
-
   orderByPrice: false, //this is what trigers wether we will have to render in order or not
   orderByAlphabet: false,
   filter: false
- 
 }
 // #endregion
 
@@ -43,9 +78,9 @@ function getStateDataFromServer() {
 // #endregion
 
 // #region 'HELPER FUNCTIONS DERIVED STATE'
-function sortByAlphabet() {
+function sortByAlphabet(): void {
 
-  state.alphabetOrderBy.sort(function(a, b){
+  state.alphabetOrderBy.sort(function(a:alaphabetOrderBy, b:alaphabetOrderBy): number {
     if(a.name < b.name) { return -1; }
     if(a.name > b.name) { return 1; }
     return 0;
@@ -59,9 +94,9 @@ function sortByAlphabet() {
 }
 
 //function that uses sorts by alphabet
-function getEventListenerBtnSortAlphabet() {
+function getEventListenerBtnSortAlphabet():void {
 
-  sortAlphabetBtn.addEventListener('click', function(event) {
+  sortAlphabetBtn.addEventListener('click', function(event): void {
 
     event.preventDefault()
     sortByAlphabet()
@@ -71,11 +106,9 @@ function getEventListenerBtnSortAlphabet() {
 }
 
 //this function gets the ordered array in the state
-function getOrderedStore() {
+function getOrderedStore(): void {
 
-  // state.priceOrderBy = state.items.sort((a, b) => (a.price > b.price) ? 1 : (a.price === b.price) ? ((a.name > b.name) ? 1 : -1) : -1 ) //this changes original array thats why revert button didnt work
-
-  state.priceOrderBy.sort((a, b) => (a.price > b.price) ? 1 : (a.price === b.price) ? ((a.name > b.name) ? 1 : -1) : -1 )
+  state.priceOrderBy.sort(function(a: number, b: number) => (a.price > b.price) ? 1 : (a.price === b.price) ? ((a.name > b.name) ? 1 : -1) : -1 )
   state.orderByPrice = true
   state.orderByAlphabet = false
   render()
@@ -83,9 +116,9 @@ function getOrderedStore() {
 }
 
 //this function gets the previous orderes array by changing state and rerender
-function getEventListenerRevertBackOrder() {
+function getEventListenerRevertBackOrder(): void {
 
-  sortPriceBtnRemove.addEventListener('click', function(event) {
+  sortPriceBtnRemove.addEventListener('click', function(event): void {
 
     event.preventDefault()
     changeOrderByPrice()
@@ -95,7 +128,7 @@ function getEventListenerRevertBackOrder() {
 }
 
 //helper for the event listener to rever order price back to previous state
-function changeOrderByPrice() {
+function changeOrderByPrice():void {
 
     state.orderByPrice = false
     state.orderByAlphabet = false
@@ -105,9 +138,9 @@ function changeOrderByPrice() {
 }
 
 //this function just is part of init() and gets ordered calls the function there
-function getEventListenerBtnSortPrice() {
+function getEventListenerBtnSortPrice():void {
 
-  sortPriceBtn.addEventListener('click', function(event) {
+  sortPriceBtn.addEventListener('click', function(event):void {
 
     event.preventDefault()
     getOrderedStore()
@@ -117,14 +150,14 @@ function getEventListenerBtnSortPrice() {
 }
 
 //function wich contains all 10 event listeners for 10 btn filters by type
-function getEventListenerFilterButtons() {
+function getEventListenerFilterButtons():void {
 
-  filterTypeApple.addEventListener('click', function(event) {
+  filterTypeApple.addEventListener('click', function(event):void {
 
     event.preventDefault()
     state.filter = true
 
-    for (const element of state.items) {
+    for (const element: element of state.items) {
 
       if (element.name === 'apple') {
         element.filterOnly = true
@@ -135,12 +168,12 @@ function getEventListenerFilterButtons() {
 
   })
 
-  filterTypeApricot.addEventListener('click', function(event) {
+  filterTypeApricot.addEventListener('click', function(event):void {
 
     event.preventDefault()
     state.filter = true
 
-    for (const element of state.items) {
+    for (const element: element of state.items) {
 
       if (element.name === 'apricot') {
         element.filterOnly = true
@@ -151,12 +184,12 @@ function getEventListenerFilterButtons() {
     
   })
 
-  filterTypeAvocado.addEventListener('click', function(event) {
+  filterTypeAvocado.addEventListener('click', function(event):void {
 
     event.preventDefault()
     state.filter = true
 
-    for (const element of state.items) {
+    for (const element: element of state.items) {
 
       if (element.name === 'avocado') {
         element.filterOnly = true
@@ -167,12 +200,12 @@ function getEventListenerFilterButtons() {
     
   })
 
-  filterTypeBanana.addEventListener('click', function(event) {
+  filterTypeBanana.addEventListener('click', function(event):void {
 
     event.preventDefault()
     state.filter = true
 
-    for (const element of state.items) {
+    for (const element: element of state.items) {
 
       if (element.name === 'bananas') {
         element.filterOnly = true
@@ -183,12 +216,12 @@ function getEventListenerFilterButtons() {
     
   })
 
-  filterTypeBeetroot.addEventListener('click', function(event) {
+  filterTypeBeetroot.addEventListener('click', function(event):void {
 
     event.preventDefault()
     state.filter = true
 
-    for (const element of state.items) {
+    for (const element: element of state.items) {
 
       if (element.name === 'beetroot') {
         element.filterOnly = true
@@ -199,12 +232,12 @@ function getEventListenerFilterButtons() {
     
   })
 
-  filterTypeBellPepper.addEventListener('click', function(event) {
+  filterTypeBellPepper.addEventListener('click', function(event):void {
 
     event.preventDefault()
     state.filter = true
 
-    for (const element of state.items) {
+    for (const element: element of state.items) {
 
       if (element.name === 'bell-pepper') {
         element.filterOnly = true
@@ -215,12 +248,12 @@ function getEventListenerFilterButtons() {
     
   })
 
-  filterTypeBerry.addEventListener('click', function(event) {
+  filterTypeBerry.addEventListener('click', function(event):void {
 
     event.preventDefault()
     state.filter = true
 
-    for (const element of state.items) {
+    for (const element: element of state.items) {
 
       if (element.name === 'berry') {
         element.filterOnly = true
@@ -231,12 +264,12 @@ function getEventListenerFilterButtons() {
     
   })
 
-  filterTypeBlueBerry.addEventListener('click', function(event) {
+  filterTypeBlueBerry.addEventListener('click', function(event):void {
 
     event.preventDefault()
     state.filter = true
 
-    for (const element of state.items) {
+    for (const element: element of state.items) {
 
       if (element.name === 'blueberry') {
         element.filterOnly = true
@@ -247,12 +280,12 @@ function getEventListenerFilterButtons() {
     
   })
 
-  filterTypeEggPlant.addEventListener('click', function(event) {
+  filterTypeEggPlant.addEventListener('click', function(event):void {
 
     event.preventDefault()
     state.filter = true
 
-    for (const element of state.items) {
+    for (const element: element of state.items) {
 
       if (element.name === 'eggplant') {
         element.filterOnly = true
@@ -263,12 +296,12 @@ function getEventListenerFilterButtons() {
   
   })
 
-  filterTypeCarrot.addEventListener('click', function(event) {
+  filterTypeCarrot.addEventListener('click', function(event):void {
 
     event.preventDefault()
     state.filter = true
 
-    for (const element of state.items) {
+    for (const element: element of state.items) {
 
       if (element.name === 'carrot') {
         element.filterOnly = true
@@ -282,14 +315,14 @@ function getEventListenerFilterButtons() {
 }
 
 //function that stores all true filter only in state.items array i need for events of buttons filter by
-function getFilterByState() {
+function getFilterByState(): Items[] {
   return state.items.filter(item => item.filterOnly === true)
 }
 
 //this is a function in wich when i click a new feature added button the whole cart item get erased by manipulating the STATE
-function emptyCartBtnEvent() {
+function emptyCartBtnEvent():void {
 
-  for (const element of state.items) {
+  for (const element: element of state.items) {
     const saveCartQuantity = element.inCart
     element.inCart = 0
     element.inStock += saveCartQuantity
@@ -298,9 +331,9 @@ function emptyCartBtnEvent() {
 }
 
 //this function just clears all cart items when clicked as an event listener and calls function inside it
-function listenToEmptyCartBtn() {
+function listenToEmptyCartBtn():void {
 
-  emptyCartBtn.addEventListener('click', function () {
+  emptyCartBtn.addEventListener('click', function ():void {
 
     emptyCartBtnEvent()
     render()
@@ -310,12 +343,12 @@ function listenToEmptyCartBtn() {
 }
 
 //the key function to make rendering work as it should
-function getCartItems() {
+function getCartItems(): Items[] {
   return state.items.filter(item => item.inCart > 0) //filter is a method for ARRAYS to filter and create a new ARRAY
 }
 
 //this is called when i click the small btn minus in cart item section, and updates the states
-function decreaseItemQuantity(cardParam) {
+function decreaseItemQuantity(cardParam: Items):void {
 
   if (cardParam.inCart > 0) {
     cardParam.inCart--
@@ -325,7 +358,7 @@ function decreaseItemQuantity(cardParam) {
 }
 
 //this is called when i click the small btn plus in cart item section, and updates the states
-function increaseItemQuantity(cardParam) {
+function increaseItemQuantity(cardParam: Items):void {
 
   if (cardParam.inStock > 0) {
     cardParam.inStock--
@@ -335,13 +368,13 @@ function increaseItemQuantity(cardParam) {
 }
 
 //this function calculates the total and rerenders when state changes
-function calculateTotal() {
+function calculateTotal(): number {
 
   let total = 0
 
-  const cartArray = getCartItems()
+  const cartArray: Items[] = getCartItems()
 
-  for (const element of cartArray) {
+  for (const element: element of cartArray) {
     total += element.price * element.inCart
   }
 
@@ -350,57 +383,57 @@ function calculateTotal() {
 }
 
 //this function crucial to make the x button feature work
-function removeItemFromStore(removeParam) {
+function removeItemFromStore(removeParam: Items):void {
   
-  const updatedStore = state.items.filter(storeParam => storeParam.id !== removeParam.id)
+  const updatedStore: Items[] = state.items.filter(storeParam => storeParam.id !== removeParam.id)
   state.items = updatedStore
 
 }
 // #endregion
 
 // #region 'RENDER FUNCTIONS'
-function renderStore(itemsParam, priceParam, alphabetParam) {
+function renderStore(itemsParam: Items[], priceParam: Items[], alphabetParam: Items[]):void {
 
   storeUl.innerHTML = ''
-  const filterArray = getFilterByState()
+  const filterArray: Items[] = getFilterByState()
 
   if (state.orderByPrice === false && state.orderByAlphabet === false && state.filter === false) {
-    for (const element of itemsParam) {
+    for (const element: element of itemsParam) {
         renderStoreItem(element)
     }
   }
 
   else if(state.orderByPrice === true && state.orderByAlphabet === false && state.filter === false) {
-    for (const element of priceParam) {
+    for (const element: element of priceParam) {
         renderStoreItem(element)
     }
   }
 
   else if(state.orderByPrice === false && state.orderByAlphabet === true && state.filter === false) {
-    for (const element of alphabetParam) {
+    for (const element: element of alphabetParam) {
         renderStoreItem(element)
     }
   }
 
   else if(state.orderByPrice === false && state.orderByAlphabet === false && state.filter === true) {
-    for (const element of filterArray) {
+    for (const element: element of filterArray) {
         renderStoreItem(element)
     }
   }
 
 }
 
-function renderStoreItem(storeParam) {
+function renderStoreItem(storeParam: Items):void {
 
   //creating li
-  const liEl = document.createElement('li')
+  const liEl:HTMLElement | null = document.createElement('li')
   
   //creating a div
-  const divEl = document.createElement('div')
+  const divEl:HTMLElement | null = document.createElement('div')
   divEl.setAttribute('class', 'store--item-icon')
 
   //creating a btn with x to remove el from store
-  const removeBtnEl = document.createElement('button')
+  const removeBtnEl:HTMLElement | null = document.createElement('button')
   removeBtnEl.textContent = 'X'
   removeBtnEl.addEventListener('click', function(event) {
 
@@ -412,7 +445,7 @@ function renderStoreItem(storeParam) {
   })
   
   //creating an image
-  const imgEl = document.createElement('img')
+  const imgEl:HTMLElement | null = document.createElement('img')
 
   //checking that the id 10 should have different src image string
   if (storeParam.id === 10) {
@@ -427,21 +460,21 @@ function renderStoreItem(storeParam) {
   imgEl.setAttribute('alt', storeParam.name)
 
   //creating a button wich is crucial to this app
-  const btnEl = document.createElement('button')
+  const btnEl:HTMLElement | null = document.createElement('button')
   btnEl.textContent = 'Add to cart'
 
   //creating span to show me the item if is in stock and how many
-  const stockSpanEl = document.createElement('span')
+  const stockSpanEl:HTMLElement | null = document.createElement('span')
   stockSpanEl.setAttribute('class', 'stock-span-store')
   stockSpanEl.textContent = `The stock: ${storeParam.inStock}`
 
   //creating span to show me the item price
-  const priceSpanEl = document.createElement('span')
+  const priceSpanEl:HTMLElement | null = document.createElement('span')
   priceSpanEl.setAttribute('class', 'price-span-store')
   priceSpanEl.textContent = `The price: ${storeParam.price}`
 
   //creating span to show me the item name
-  const nameSpanEl = document.createElement('span')
+  const nameSpanEl:HTMLElement | null = document.createElement('span')
   nameSpanEl.setAttribute('class', 'name-span-store')
   nameSpanEl.textContent = `Name: ${storeParam.name}`
 
@@ -451,7 +484,7 @@ function renderStoreItem(storeParam) {
   storeUl.append(liEl)
 
   //event listeners for the add to cart button
-  btnEl.addEventListener('click', function(event) {
+  btnEl.addEventListener('click', function(event): void {
 
     event.preventDefault()
 
@@ -464,27 +497,27 @@ function renderStoreItem(storeParam) {
 
 }
 
-function renderCart() {
+function renderCart():void {
 
   //we get the ul wich i want from header DESTROY
   cartUl.innerHTML = ''
 
   // then, recreate the contents of the cart FILTER ARRAY THIS RETURNED THING
-  const cart = getCartItems() //KEY TO MAKE THINGS WORK
+  const cart: Items[] = getCartItems() //KEY TO MAKE THINGS WORK
 
-  for (const element of cart) {
+  for (const element: element of cart) {
     renderCartItem(element)
   }
 
 }
 
-function renderCartItem(cartParam) {
+function renderCartItem(cartParam: Items):void {
 
   //creating the li
-  const liEl = document.createElement('li')
+  const liEl:HTMLElement | null = document.createElement('li')
 
   //creating the img
-  const imgEl = document.createElement('img')
+  const imgEl:HTMLElement | null = document.createElement('img')
   imgEl.setAttribute('class', 'cart--item-icon')
 
   //checking if the id 10 will have the 0 not 00 cause then it doesnt load
@@ -500,20 +533,20 @@ function renderCartItem(cartParam) {
   imgEl.setAttribute('alt', `${cartParam.name}`)
 
   //creating the p element
-  const pEl = document.createElement('p')
+  const pEl:(HTMLElement | null) = document.createElement('p')
 
   //creating the btn element the first one with -
-  const btnEl1 = document.createElement('button')
+  const btnEl1:(HTMLElement | null) = document.createElement('button')
   btnEl1.setAttribute('class' , 'quantity-btn remove-btn center')
   btnEl1.textContent = '-'
   
   //creating span element wich has the value when you change the btn + or -
-  const spanEl = document.createElement('span')
+  const spanEl:(HTMLElement | null) = document.createElement('span')
   spanEl.setAttribute('class', 'quantity-text center')
   spanEl.textContent = cartParam.inCart
 
   //creating btn2 wich creates this button for +
-  const btnEl2 = document.createElement('button')
+  const btnEl2:(HTMLElement | null) = document.createElement('button')
   btnEl2.setAttribute('class', 'quantity-btn add-btn center')
   btnEl2.textContent = '+'
 
@@ -522,23 +555,19 @@ function renderCartItem(cartParam) {
   cartUl.append(liEl)
 
   //event listeners butttons the 1 and 2 - and +
-  btnEl1.addEventListener('click', function(event) {
+  btnEl1.addEventListener('click', function(event): void {
 
     event.preventDefault()
     decreaseItemQuantity(cartParam)
 
     spanEl.textContent = cartParam.inCart
 
-    // if (cardImgParam.inCart === 0) {
-    //   liEl.remove() YOU DONT NEED THIS YOU HAVE STATE NO DOM
-    // }
-
     calculateTotal()
     render()
 
   })
 
-  btnEl2.addEventListener('click', function(event) {
+  btnEl2.addEventListener('click', function(event): void {
 
     event.preventDefault()
     increaseItemQuantity(cartParam)
@@ -552,13 +581,13 @@ function renderCartItem(cartParam) {
 
 }
 
-function renderTotal() {
+function renderTotal():void {
 
   totalEl.textContent = '£' + calculateTotal().toFixed(2)
 
 }
 
-function render() {
+function render():void {
 
   renderStore(state.items, state.priceOrderBy, state.alphabetOrderBy)
   renderCart()
@@ -566,7 +595,7 @@ function render() {
 
 }
 
-function init() {
+function init():void {
 
   render()
   listenToEmptyCartBtn()
@@ -579,7 +608,7 @@ function init() {
 // #endregion
 
 // #region 'Function call and gettig data from server'
-getStateDataFromServer().then(function (itemsFromServer) {
+getStateDataFromServer().then(function (itemsFromServer): void {
   state.items = itemsFromServer
   state.priceOrderBy.push(...state.items); //now both are the same spread operator copy array
   state.alphabetOrderBy.push(...state.items); //now both are the same spread operator copy array
